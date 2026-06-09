@@ -656,33 +656,6 @@ a{color:inherit;text-decoration:none}
             <div class="img-slot-add" onclick="pickImage('gallery_3')" style="display:none"><div class="plus">+</div><span>ADD PHOTO</span></div>
           </div>
         </div>
-        <div class="carousel-slide">
-          <div class="carousel-img" data-slot="gallery_4" onclick="if(editMode)pickImage('gallery_4')">
-            <div class="photo-placeholder">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-              <span>PHOTO 4</span>
-            </div>
-            <div class="img-slot-add" onclick="pickImage('gallery_4')" style="display:none"><div class="plus">+</div><span>ADD PHOTO</span></div>
-          </div>
-        </div>
-        <div class="carousel-slide">
-          <div class="carousel-img" data-slot="gallery_5" onclick="if(editMode)pickImage('gallery_5')">
-            <div class="photo-placeholder">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-              <span>PHOTO 5</span>
-            </div>
-            <div class="img-slot-add" onclick="pickImage('gallery_5')" style="display:none"><div class="plus">+</div><span>ADD PHOTO</span></div>
-          </div>
-        </div>
-        <div class="carousel-slide">
-          <div class="carousel-img" data-slot="gallery_6" onclick="if(editMode)pickImage('gallery_6')">
-            <div class="photo-placeholder">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-              <span>PHOTO 6</span>
-            </div>
-            <div class="img-slot-add" onclick="pickImage('gallery_6')" style="display:none"><div class="plus">+</div><span>ADD PHOTO</span></div>
-          </div>
-        </div>
       </div>
     </div>
     <div class="carousel-controls">
@@ -693,9 +666,6 @@ a{color:inherit;text-decoration:none}
         <div class="cdot active" onclick="galGoTo(0)"></div>
         <div class="cdot" onclick="galGoTo(1)"></div>
         <div class="cdot" onclick="galGoTo(2)"></div>
-        <div class="cdot" onclick="galGoTo(3)"></div>
-        <div class="cdot" onclick="galGoTo(4)"></div>
-        <div class="cdot" onclick="galGoTo(5)"></div>
       </div>
       <button class="carousel-arrow" onclick="galNext()" aria-label="Next">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
@@ -1160,7 +1130,7 @@ a{color:inherit;text-decoration:none}
 
   // ── GALLERY CAROUSEL ──────────────────────────────────────────────────────
   let galIdx = 0;
-  const GAL_TOTAL = 6;
+  const GAL_TOTAL = 3;
   function galUpdate(){
     const track = document.getElementById('galleryTrack');
     if(!track) return;
