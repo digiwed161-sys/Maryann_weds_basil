@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
 <title>Maryann & Basil — July 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,6 +33,20 @@ html,body{width:100%;overflow-x:hidden}
 body{background:var(--bg);color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:19px;line-height:1.6;-webkit-font-smoothing:antialiased;font-weight:600}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
+
+/* ROSE PETALS */
+#petals{position:fixed;inset:0;pointer-events:none;z-index:7000;overflow:hidden}
+.petal{position:absolute;top:-9%;width:16px;height:21px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 80'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='32%25' r='78%25'%3E%3Cstop offset='0%25' stop-color='%23fce1e6'/%3E%3Cstop offset='50%25' stop-color='%23f0a9b6'/%3E%3Cstop offset='100%25' stop-color='%23cc6373'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M30 1 C7 17 4 50 30 79 C56 50 53 17 30 1 Z' fill='url(%23g)'/%3E%3Cpath d='M30 13 C24 33 24 56 30 74' stroke='%23bd5867' stroke-width='1.3' fill='none' opacity='.4'/%3E%3C/svg%3E");
+  background-size:100% 100%;background-repeat:no-repeat;
+  filter:drop-shadow(0 1px 1.5px rgba(120,40,55,.18));
+  opacity:.85;will-change:transform;animation:petalFall linear forwards}
+@keyframes petalFall{
+  0%{transform:translateY(0) translateX(0) rotate(0deg);opacity:0}
+  8%{opacity:.85}
+  100%{transform:translateY(114vh) translateX(var(--drift,40px)) rotate(560deg);opacity:.15}
+}
+@media(prefers-reduced-motion:reduce){#petals{display:none}}
 
 /* TRAVEL PATH ANIMATION */
 .travel-dots{position:fixed;inset:0;pointer-events:none;z-index:2;overflow:hidden}
@@ -532,7 +549,8 @@ a{color:inherit;text-decoration:none}
           <strong>SIBLINGS</strong>
           Dainy Mathew (Sister)<br>
           Jimins P Eldhose (Brother-in-law)<br>
-          <em>Nieces: Jacqueline Jimins &amp; Eleanor Jimins</em>
+          Jacqueline Jimins (Niece)<br>
+          Eleanor Jimins (Niece)
 
           <div class="family-sep"><span></span><i>✦</i><span></span></div>
 
@@ -725,6 +743,8 @@ a{color:inherit;text-decoration:none}
 </div><!-- /main -->
 
 
+<div id="petals"></div>
+
 <button id="bgmBtn" onclick="bgmToggle()">
   <div class="bgm-ring"></div>
   <svg id="bgmPlay" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9a7b3a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -774,8 +794,32 @@ a{color:inherit;text-decoration:none}
   }
   function enableEditMode(){ window.enableEditMode(); }
 
+  // ── ROSE PETALS ──────────────────────────────────────────────────────────
+  var _petalTimer=null;
+  function startPetals(){
+    if(_petalTimer) return;
+    var layer=document.getElementById('petals');
+    if(!layer) return;
+    _petalTimer=setInterval(function(){
+      if(document.hidden) return;
+      if(layer.childElementCount>26) return; // cap on-screen petals
+      var p=document.createElement('div');
+      p.className='petal';
+      var size=10+Math.random()*12;
+      p.style.left=(Math.random()*100)+'vw';
+      p.style.width=size+'px';
+      p.style.height=(size*1.32)+'px';   // petal is taller than wide
+      p.style.setProperty('--drift',(Math.random()*140-70)+'px');
+      var dur=7+Math.random()*7;
+      p.style.animationDuration=dur+'s';
+      p.style.opacity=(0.5+Math.random()*0.4).toFixed(2);
+      layer.appendChild(p);
+      setTimeout(function(){ p.remove(); }, dur*1000+600);
+    },680);
+  }
+
   // ── BGM ─────────────────────────────────────────────────────────────────
-  var _bgmReady=false, _bgmAdmin=false;
+  var _bgmReady=false, _bgmAdmin=false, _bgmWantPlay=false;
   var _bgmAudio=document.getElementById('bgmAudio');
   var _bgmPlayIcon=document.getElementById('bgmPlay');
   var _bgmMuteIcon=document.getElementById('bgmMute');
@@ -810,10 +854,17 @@ a{color:inherit;text-decoration:none}
     _bgmReady=true;
     _bgmAudio.addEventListener('canplay',function oncp(){
       _bgmAudio.removeEventListener('canplay',oncp);
-      _bgmAudio.play().catch(function(){});
+      if(_bgmWantPlay) _bgmAudio.play().catch(function(){});
     });
     _bgmAudio.load();
   }
+
+  // Fire autoplay from inside the openInvite() user gesture.
+  // Track is already preloaded on page load, so play() lands within the gesture.
+  window.bgmStart=function(){
+    _bgmWantPlay=true;
+    if(_bgmReady) _bgmAudio.play().catch(function(){});
+  };
 
   // Guest tap — mute/unmute
   window.bgmToggle=function(){
@@ -1195,6 +1246,9 @@ a{color:inherit;text-decoration:none}
     }
   } catch(e){ console.warn('Firebase:', e); }
 
+  // Preload the BGM track now (during landing) so play() lands inside the open gesture.
+  if(typeof _bgmInit==='function') _bgmInit();
+
   // Guest param
   const urlParams = new URLSearchParams(window.location.search);
   const GUEST_NAME = (urlParams.get('guest')||'').trim();
@@ -1220,7 +1274,8 @@ a{color:inherit;text-decoration:none}
     },{passive:true});
     checkExistingRsvp();
     loadWishes();
-    _bgmInit();
+    bgmStart();
+    startPetals();
     // Load all images for guests
     setTimeout(startImageListener, 800);
     setTimeout(startImageListener, 3000); // retry for slow connections
